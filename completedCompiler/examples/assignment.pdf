@@ -1,0 +1,16 @@
+program assignment;
+
+var a, b: integer;
+var c: real;
+var d: boolean;
+
+begin
+    a := 1 + 2;
+    b := 3 * 4;
+    c := 7 / 3;
+    d := true;
+
+    writeln(a, ' ', b);
+    writeln(c);
+    writeln(d);
+end.

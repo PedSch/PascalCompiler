@@ -1,0 +1,44 @@
+Scanner output:
+
+Parser output:
+Op Code: PUSHI
+Address Value: 0
+Op Code: POP
+Address Value: 4
+Op Code: PUSHI
+Address Value: 0
+Op Code: POP
+Address Value: 0
+Op Code: PUSH
+Address Value: 0
+Op Code: PUSHI
+Address Value: 5
+Op Code: LEQ
+Op Code: JFALSE
+Address Value: 0
+Op Code: PUSH
+Address Value: 4
+Op Code: PUSHI
+Address Value: 5
+Op Code: ADD
+Op Code: POP
+Address Value: 4
+Op Code: PUSH
+Address Value: 0
+Op Code: PUSHI
+Address Value: 1
+Op Code: ADD
+Op Code: POP
+Address Value: 0
+Op Code: JMP
+Address Value: 20
+Address Value: 73
+Op Code: PUSH
+Address Value: 4
+Op Code: PRINT_INT
+Op Code: PRINT_NEWLINE
+Op Code: HALT
+
+Output:
+30
+Program Done Sucessfully :)

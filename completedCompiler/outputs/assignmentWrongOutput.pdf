@@ -1,0 +1,28 @@
+Scanner output:
+
+Parser output:
+Op Code: PUSHI
+Address Value: 1
+Op Code: PUSHI
+Address Value: 2
+Op Code: ADD
+Op Code: POP
+Address Value: 0
+Op Code: PUSHI
+Address Value: 3
+Op Code: PUSHI
+Address Value: 4
+Op Code: MULT
+Op Code: POP
+Address Value: 4
+Op Code: PUSHI
+Address Value: 7
+Op Code: PUSHI
+Address Value: 3
+Exception in thread "main" java.lang.Error: LHS type (I) is not equal to RHS type: (null)
+        at Parser.assignVal(Parser.java:334)
+        at Parser.statements(Parser.java:86)
+        at Parser.begin(Parser.java:49)
+        at Parser.program(Parser.java:45)
+        at Parser.parse(Parser.java:37)
+        at Driver.main(Driver.java:14)

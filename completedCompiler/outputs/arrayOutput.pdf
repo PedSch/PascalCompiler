@@ -1,0 +1,67 @@
+Scanner output:
+
+Parser output:
+Op Code: PUSHI
+Address Value: 23
+Op Code: PUSHI
+Address Value: 20
+Op Code: XCHG
+Op Code: SUB
+Op Code: PUSHI
+Address Value: 4
+Op Code: MULT
+Op Code: PUSHI
+Address Value: 0
+Op Code: ADD
+Op Code: PUSHI
+Address Value: 3
+Op Code: PUT
+Op Code: PUSHI
+Address Value: 24
+Op Code: PUSHI
+Address Value: 20
+Op Code: XCHG
+Op Code: SUB
+Op Code: PUSHI
+Address Value: 4
+Op Code: MULT
+Op Code: PUSHI
+Address Value: 0
+Op Code: ADD
+Op Code: PUSHI
+Address Value: 23
+Op Code: PUSHI
+Address Value: 20
+Op Code: XCHG
+Op Code: SUB
+Op Code: PUSHI
+Address Value: 4
+Op Code: MULT
+Op Code: PUSHI
+Address Value: 0
+Op Code: ADD
+Op Code: GET
+Op Code: PUSHI
+Address Value: 5
+Op Code: ADD
+Op Code: PUT
+Op Code: PUSHI
+Address Value: 24
+Op Code: PUSHI
+Address Value: 20
+Op Code: XCHG
+Op Code: SUB
+Op Code: PUSHI
+Address Value: 4
+Op Code: MULT
+Op Code: PUSHI
+Address Value: 0
+Op Code: ADD
+Op Code: GET
+Op Code: PRINT_INT
+Op Code: PRINT_NEWLINE
+Op Code: HALT
+
+Output:
+8
+Program Done Sucessfully :)

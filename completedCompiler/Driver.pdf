@@ -1,0 +1,19 @@
+import java.io.*;
+import java.util.ArrayList;
+
+public  class Driver {
+    public static void main(String[] args) throws FileNotFoundException {
+        if(args[1] == "-v") {
+            System.out.println("Scanner output:");
+        }
+        ArrayList<Token> tokenArrayList = TokenReader.scan(new File(args[0]));
+        if(args[1] == "-v"){
+            System.out.println("\nParser output:");
+        }
+        Parser.initParse(tokenArrayList);
+        Byte[] instructions = Parser.parse();
+        Executor.getInstructions(instructions);
+        System.out.println("\nOutput:");
+        Executor.executeInstructions();
+    }
+}

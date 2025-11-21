@@ -1,0 +1,57 @@
+Scanner output:
+
+Parser output:
+Op Code: PUSHI
+Address Value: 1
+Op Code: PUSHI
+Address Value: 2
+Op Code: ADD
+Op Code: POP
+Address Value: 0
+Op Code: PUSHI
+Address Value: 3
+Op Code: PUSHI
+Address Value: 4
+Op Code: MULT
+Op Code: POP
+Address Value: 4
+Op Code: PUSHI
+Address Value: 7
+Op Code: PUSHI
+Address Value: 3
+Op Code: CVR
+Op Code: XCHG
+Op Code: CVR
+Op Code: XCHG
+Op Code: FDIV
+Op Code: POP
+Address Value: 8
+Op Code: PUSHI
+Address Value: 1
+Op Code: POP
+Address Value: 12
+Op Code: PUSH
+Address Value: 0
+Op Code: PRINT_INT
+Op Code: PUSHI
+Address Value: 32
+Op Code: PRINT_CHAR
+Op Code: PUSH
+Address Value: 4
+Op Code: PRINT_INT
+Op Code: PRINT_NEWLINE
+Op Code: PUSH
+Address Value: 8
+Op Code: PRINT_REAL
+Op Code: PRINT_NEWLINE
+Op Code: PUSH
+Address Value: 12
+Op Code: PRINT_BOOL
+Op Code: PRINT_NEWLINE
+Op Code: HALT
+
+Output:
+3 12
+2.3333333
+True
+Program Done Sucessfully :)

@@ -236,6 +236,7 @@ public class CodeGenerator {
         } else {
             System.out.print(val);
         }
+        System.out.print(" ");
 
     }
 
@@ -246,15 +247,17 @@ public class CodeGenerator {
         } else {
             System.out.print("False");
         }
+        System.out.print(" ");
     }
 
     public static void printInt(){
         System.out.print(stack.pop());
-
+        System.out.print(" ");
     }
 
     public static void printChar(){
         System.out.print(Character.toChars((Integer) stack.pop())[0]);
+        System.out.print(" ");
     }
 
     public static void add(){

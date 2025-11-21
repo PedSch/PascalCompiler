@@ -161,7 +161,7 @@ public final class Parser {
             for (Token var : variablesArrayList) {
                 Symbol symbol = new Symbol(var.getTokenValue(),
                         "A_VAR",
-                        STRING_TYPE_HASH_MAP.get(dataType.toLowerCase().substring(3)),
+                        STRING_TYPE_HASH_MAP.get(dataType.toLowerCase()),
                         dp);
 
                 dp += 4;
@@ -218,7 +218,7 @@ public final class Parser {
                             symbol.setHigh(i2);
                             symbol.setTokenType("AN_ARRAY");
                             symbol.setIndexType(TYPE.I);
-                            symbol.setValueType(STRING_TYPE_HASH_MAP.get(valueType.toLowerCase().substring(3)));
+                            symbol.setValueType(STRING_TYPE_HASH_MAP.get(valueType.toLowerCase()));
 
                             dp += size;
                         }
@@ -246,7 +246,7 @@ public final class Parser {
                             symbol.setHigh(c2);
                             symbol.setTokenType("AN_ARRAY");
                             symbol.setIndexType(TYPE.C);
-                            symbol.setValueType(STRING_TYPE_HASH_MAP.get(valueType.toLowerCase().substring(3)));
+                            symbol.setValueType(STRING_TYPE_HASH_MAP.get(valueType.toLowerCase()));
 
                             dp += size;
                         }
@@ -269,56 +269,66 @@ public final class Parser {
         genOpCode(OP_CODE.HALT);
     }
     public static void statements(){
-        while(!currentToken.getTokenType().equals("END")) {
-            switch (currentToken.getTokenType()) {
-                case "CASE":
-                    caseStat();
-                    break;
-                case "GOTO":
-                    goToStat();
-                    break;
-                case "WHILE":
-                    whileStat();
-                    break;
-                case "REPEAT":
-                    repeatStat();
-                    break;
-                case "IF":
-                    ifStat();
-                    break;
-                case "FOR":
-                    forStat();
-                    break;
-                case "WRITELN":
-                    writeStat();
-                    break;
-                case "IDENTIFIER":
-                    Symbol symbol = SymbolTable.lookupS(currentToken.getTokenValue());
-                    if (symbol != null) {
-                        //assign token type to be var, proc, or label
-                        currentToken.setTokenType(symbol.getTokenType());
-                    }
-                    break;
-                case "A_VAR":
-                    assignmentStat();
-                    break;
-                case "A_PROC":
-                    procedureStat();
-                    break;
-                case "A_LABEL":
-                    //labelStat(); // TODO: Method not implemented
-                    break;
-                case "AN_ARRAY":
-                    arrayAssignmentStat();
-                    break;
-                case "SEMI_COLON":
-                    match("SEMI_COLON");
-                    break;
-                default:
-                    return;
-            }
+        while(!currentToken.getTokenType().equals("END") && !currentToken.getTokenType().equals("ELSE")) {
+            statement();
         }
 
+    }
+    
+    public static void statement(){
+        switch (currentToken.getTokenType()) {
+            case "CASE":
+                caseStat();
+                break;
+            case "GOTO":
+                goToStat();
+                break;
+            case "WHILE":
+                whileStat();
+                break;
+            case "REPEAT":
+                repeatStat();
+                break;
+            case "IF":
+                ifStat();
+                break;
+            case "FOR":
+                forStat();
+                break;
+            case "WRITELN":
+                writeStat();
+                break;
+            case "BEGIN":
+                match("BEGIN");
+                statements();
+                match("END");
+                break;
+            case "IDENTIFIER":
+                Symbol symbol = SymbolTable.lookupS(currentToken.getTokenValue());
+                if (symbol != null) {
+                    //assign token type to be var, proc, or label
+                    currentToken.setTokenType(symbol.getTokenType());
+                    statement(); // Recursively handle the categorized token
+                }
+                break;
+            case "A_VAR":
+                assignmentStat();
+                break;
+            case "A_PROC":
+                procedureStat();
+                break;
+            case "A_LABEL":
+                //labelStat(); // TODO: Method not implemented
+                break;
+            case "AN_ARRAY":
+                arrayAssignmentStat();
+                break;
+            case "SEMI_COLON":
+                match("SEMI_COLON");
+                break;
+            default:
+                return;
+        }
     }
      static void procedureStat() {
         Symbol symbol = SymbolTable.lookupS(currentToken.getTokenValue());
@@ -374,7 +384,6 @@ public final class Parser {
             match("BEGIN");
             statements();
             match("END");
-            match("SEMI_COLON");
             genOpCode(OP_CODE.PUSH);
             genAddress(address);
             genOpCode(OP_CODE.PUSHI);
@@ -410,7 +419,6 @@ public final class Parser {
         match("BEGIN");
         statements();
         match("END");
-        match("SEMI_COLON");
         genOpCode(OP_CODE.JMP);
         genAddress(target);
         int save = ip;
@@ -425,7 +433,7 @@ public final class Parser {
         genOpCode(OP_CODE.JFALSE);
         int hole1 = ip;
         genAddress(0); //Holder value for the address
-        statements();
+        statement();  // Parse single THEN statement
         if(currentToken.getTokenType().equals("ELSE")) {
             genOpCode(OP_CODE.JMP);
             int hole2 = ip;
@@ -435,9 +443,8 @@ public final class Parser {
             genAddress(save); //JFALSE to this else statement
             ip = save;
             hole1 = hole2;
-            statements();
             match("ELSE");
-            statements();
+            statement();  // Parse single ELSE statement
         }
         int save = ip;
         ip = hole1;
@@ -484,7 +491,6 @@ public final class Parser {
             }
         }
         match("END");
-        match("SEMI_COLON");
         int save = ip;
         for (Integer labelHole: labelsArrayList) {
             ip = labelHole;
@@ -496,50 +502,9 @@ public final class Parser {
         match("WRITELN");
         match("OPEN_PARENTHESIS");
         while (true) {
-            Symbol symbol =  SymbolTable.lookupS(currentToken.getTokenValue());
-            TYPE t;
-            if (symbol != null) {
-                if (symbol.getDataType() == TYPE.A) {
-                    currentToken.setTokenType("AN_ARRAY");
-                    handleArrayAccess(symbol);
-                    genOpCode(OP_CODE.GET);
-                    t = symbol.getValueType();
-
-                } else {
-                    //variable
-                    currentToken.setTokenType("A_VAR");
-                    t = symbol.getDataType();
-                    genOpCode(OP_CODE.PUSH);
-                    genAddress(symbol.getAddress());
-                    match("A_VAR");
-                }
-            } else {
-                t = getLitType(currentToken.getTokenType());
-                assert t != null;
-                switch (t) {
-                    case R:
-                        genOpCode(OP_CODE.PUSHF);
-                        genAddress(Float.valueOf(currentToken.getTokenValue()));
-                        break;
-                    case I:
-                        genOpCode(OP_CODE.PUSHI);
-                        genAddress(Integer.valueOf(currentToken.getTokenValue()));
-                        break;
-                    case B:
-                        genOpCode(OP_CODE.PUSHI);
-                        if (currentToken.getTokenValue().equals("true")) {
-                            genAddress(1);
-                        } else {
-                            genAddress(0);
-                        }
-                        break;
-                    case C:
-                        genOpCode(OP_CODE.PUSHI);
-                        genAddress((int)(currentToken.getTokenValue().charAt(0)));
-                        break;
-                }
-                match(currentToken.getTokenType());
-            }
+            // Evaluate expression to get type and value on stack
+            TYPE t = E();
+            
             assert t != null;
             switch (t) {
                 case I:

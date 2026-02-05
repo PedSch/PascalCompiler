@@ -112,7 +112,7 @@ public class CodeGenerator {
                     fdiv();
                     break;
                 default:
-                    throw new Error(String.format("Unhandled case: %s", opCode));
+                    throw new IllegalStateException(String.format("Unhandled case: %s", opCode));
             }
 
         }

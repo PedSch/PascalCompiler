@@ -192,7 +192,7 @@ public final class Parser {
         String valueType = currentToken.getTokenType();
         match(valueType);
         if (indexType1 != indexType2){
-            throw new Error(String.format("Array index LHS type (%s) is not equal to RHS type: (%s)", indexType1, indexType2));
+            throw new IllegalStateException(String.format("Array index LHS type (%s) is not equal to RHS type: (%s)", indexType1, indexType2));
         } else {
             assert indexType1 != null;
             switch (indexType1) {
@@ -200,7 +200,7 @@ public final class Parser {
                     int i1 = Integer.valueOf(v1);
                     int i2 = Integer.valueOf(v2);
                     if (i1 > i2){
-                        throw new Error(String.format("Array range is invalid: %d..%d", i1, i2));
+                        throw new IllegalStateException(String.format("Array range is invalid: %d..%d", i1, i2));
                     }
                     Symbol firstIntArray = SymbolTable.lookupS(variablesArrayList.get(0).getTokenValue());
                     if (firstIntArray != null) {
@@ -228,7 +228,7 @@ public final class Parser {
                     char c1 = v1.toCharArray()[0];
                     char c2 = v2.toCharArray()[0];
                     if (c1 > c2){
-                        throw new Error(String.format("Array range is invalid: %c..%c", c1, c2));
+                        throw new IllegalStateException(String.format("Array range is invalid: %c..%c", c1, c2));
                     }
 
                     Symbol firstCharArray = SymbolTable.lookupS(variablesArrayList.get(0).getTokenValue());
@@ -254,7 +254,7 @@ public final class Parser {
 
                     break;
                 case R:
-                    throw new Error("Array index type: real is invalid");
+                    throw new IllegalStateException("Array index type: real is invalid");
             }
 
         }
@@ -457,7 +457,7 @@ public final class Parser {
         Token eToken = currentToken;
         TYPE t1 = E();
         if (t1 == TYPE.R) {
-            throw new Error("Invalid type of real for case E");
+            throw new IllegalStateException("Invalid type of real for case E");
         }
         match("CLOSE_PARENTHESIS");
         match("OF");
@@ -520,7 +520,7 @@ public final class Parser {
                     genOpCode(OP_CODE.PRINT_BOOL);
                     break;
                 default:
-                    throw new Error("Cannot write unknown type");
+                    throw new IllegalStateException("Cannot write unknown type");
             }
             switch (currentToken.getTokenType()) {
                 case "COMMA":
@@ -531,7 +531,7 @@ public final class Parser {
                     genOpCode(OP_CODE.PRINT_NEWLINE);
                     return;
                 default:
-                    throw new Error(String.format("Current token type (%s) is neither COMMA nor CLOSE_PARENTHESIS", currentToken.getTokenType()));
+                    throw new IllegalStateException(String.format("Current token type (%s) is neither COMMA nor CLOSE_PARENTHESIS", currentToken.getTokenType()));
             }
 
         }
@@ -548,7 +548,7 @@ public final class Parser {
                 genOpCode(OP_CODE.POP);
                 genAddress(lhsAddress);
             } else {
-                throw new Error(String.format("LHS type (%s) is not equal to RHS type: (%s)", lhsType, rhsType));
+                throw new IllegalStateException(String.format("LHS type (%s) is not equal to RHS type: (%s)", lhsType, rhsType));
             }
         }
     }
@@ -571,7 +571,7 @@ public final class Parser {
         if (varSymbol != null) {
             t = varSymbol.getDataType();
             if (t != symbol.getIndexType()) {
-                throw new Error(String.format("Incompatible index type: (%s, %s)", t, symbol.getIndexType()));
+                throw new IllegalStateException(String.format("Incompatible index type: (%s, %s)", t, symbol.getIndexType()));
             }
             currentToken.setTokenType("A_VAR");
             genOpCode(OP_CODE.PUSH);
@@ -618,7 +618,7 @@ public final class Parser {
                     int i1 = (int) symbol.getLow();
                     int i2 = (int) symbol.getHigh();
                     if (Integer.valueOf(index) < i1 || Integer.valueOf(index) > i2) {
-                        throw new Error(String.format("Index %d is not within range %d to %d",
+                        throw new IllegalStateException(String.format("Index %d is not within range %d to %d",
                                 Integer.valueOf(index), i1, i2));
                     }
                     genAddress(i1);
@@ -635,7 +635,7 @@ public final class Parser {
                     char c1 = (char) symbol.getLow();
                     char c2 = (char) symbol.getHigh();
                     if (index.toCharArray()[0] < c1 || index.toCharArray()[0] > c2) {
-                        throw new Error(String.format("Index %c is not within range %c to %c",
+                        throw new IllegalStateException(String.format("Index %c is not within range %c to %c",
                                 index.toCharArray()[0], c1, c2));
                     }
                     genAddress(c1);
@@ -708,7 +708,7 @@ public final class Parser {
                         return symbol.getValueType();
                     }
                 } else {
-                    throw new Error(String.format("Symbol not found (%s)", currentToken.getTokenValue()));
+                    throw new IllegalStateException(String.format("Symbol not found (%s)", currentToken.getTokenValue()));
                 }
             case "INTLIT":
                 genOpCode(OP_CODE.PUSHI);
@@ -750,7 +750,7 @@ public final class Parser {
                 match("CLOSE_PARENTHESIS");
                 return t;
             default:
-                throw new Error("Unknown data type");
+                throw new IllegalStateException("Unknown data type");
         }
     }
     public static TYPE emit(String op, TYPE t1, TYPE t2){
@@ -885,7 +885,7 @@ public final class Parser {
     }
     public static void match(String tokenType) {
         if (!tokenType.equals(currentToken.getTokenType())) {
-            throw new Error(String.format("Token type (%s) does not match current token type (%s)", tokenType, currentToken.getTokenType()));
+            throw new IllegalStateException(String.format("Token type (%s) does not match current token type (%s)", tokenType, currentToken.getTokenType()));
         } else {
             getToken();
         }

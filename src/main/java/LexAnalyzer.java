@@ -1,5 +1,6 @@
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
@@ -27,7 +28,11 @@ public final class LexAnalyzer {
         KEYWORDS_TOKEN = new HashMap<>();
         String word;
 
-        try (Scanner sc = new Scanner(new File("keywords.txt"))) {
+        // Try to load from classpath first (for Maven), then from file system (for direct execution)
+        InputStream keywordsStream = LexAnalyzer.class.getClassLoader().getResourceAsStream("keywords.txt");
+        try (Scanner sc = keywordsStream != null 
+                ? new Scanner(keywordsStream) 
+                : new Scanner(new File("keywords.txt"))) {
             // Instead of declaring the keywords here, we use a File. I added more than is necessary for the deliverables, because I just copied and pasted from a list of Pascal's reserved words.
             while (sc.hasNext()) {
                 word = sc.next();

@@ -9,12 +9,14 @@ public class SymbolTable {
      static Scope S = new Scope();
 
     public static int hash(String symbolName) {
-        int h = 0;
-        for (int i = 0; i < symbolName.length(); i++) {
-            h = h + h + symbolName.charAt(i);
+        if (symbolName == null) {
+            return 0;
         }
-        h = h % HASH_TABLE_SIZE;
-        return h;
+        int h = 0;
+        for (char c : symbolName.toCharArray()) {
+            h = h + h + c;
+        }
+        return Math.abs(h % HASH_TABLE_SIZE);
     }
 
     public static void insert(Symbol symbol) {
@@ -32,12 +34,15 @@ public class SymbolTable {
     }
 
     public static Symbol lookupS(String symbolName) {
+        if (symbolName == null) {
+            return null;
+        }
         int hashValue = hash(symbolName);
-        Symbol current = S.symbolTable[hashValue];
         Scope scopeCursor = S;
         while (scopeCursor != null) {
+            Symbol current = scopeCursor.symbolTable[hashValue];
             while (current != null) {
-                if (current.getName().equals(symbolName)) {
+                if (symbolName.equals(current.getName())) {
                     return current;
                 }
                 current = current.next;

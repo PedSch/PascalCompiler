@@ -27,15 +27,14 @@ public final class LexAnalyzer {
         KEYWORDS_TOKEN = new HashMap<>();
         String word;
 
-        try {
-            //Instead of declaring the keywords here, we use a File. I added more than is nessicary for the deliverables, because I just copied and pasted from a list of pascal's reserved words.
-            Scanner sc = new Scanner(new File("keywords.txt")); 
-            while(sc.hasNext()){
+        try (Scanner sc = new Scanner(new File("keywords.txt"))) {
+            // Instead of declaring the keywords here, we use a File. I added more than is necessary for the deliverables, because I just copied and pasted from a list of Pascal's reserved words.
+            while (sc.hasNext()) {
                 word = sc.next();
-                KEYWORDS_TOKEN.put(word, String.format("%s", word.toUpperCase()));
+                KEYWORDS_TOKEN.put(word, word.toUpperCase());
             }
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            System.err.println("Warning: keywords.txt not found, using empty keyword list");
         }
     }
 
@@ -89,12 +88,11 @@ public final class LexAnalyzer {
     }
 
     public static ArrayList<Token> scan(File file) throws FileNotFoundException {
-        Scanner sc = new Scanner(file).useDelimiter("");
-
-        while (sc.hasNext()) {
-            char element = sc.next().toLowerCase().charAt(0);
-
-            checkCharacter(element);
+        try (Scanner sc = new Scanner(file).useDelimiter("")) {
+            while (sc.hasNext()) {
+                char element = sc.next().toLowerCase().charAt(0);
+                checkCharacter(element);
+            }
         }
 
         tokenName = "EOF";
@@ -103,8 +101,13 @@ public final class LexAnalyzer {
         return tokenArrayList;
     }
 
-    public static void checkCharacter(char element){
-        switch (CHAR_TYPE.get(String.valueOf(element))){
+    public static void checkCharacter(char element) {
+        TYPE charType = CHAR_TYPE.get(String.valueOf(element));
+        if (charType == null) {
+            throw new IllegalArgumentException("Unhandled character scanned: " + element);
+        }
+
+        switch (charType) {
 
             case LETTER:
                 if (!readingNumber) {
@@ -126,27 +129,23 @@ public final class LexAnalyzer {
 
                 break;
             case SPACE:
-                if (readingString){
+                if (readingString) {
                     tokenName += element;
                 } else if (readingColon) {
                     generateToken(OPERATORS_TOKEN.get(tokenName));
-
                     readingColon = false;
-
                 } else if (readingBool) {
                     generateToken(OPERATORS_TOKEN.get(tokenName));
-
                     readingBool = false;
-
                 } else if (!readingNumber) {
                     tokenName = endOfWord();
 
-                    if (element == Character.toChars(10)[0]){
+                    if (element == '\n') {
                         lineRow++;
                         lineCol = 0;
-                    } else if (element == Character.toChars(9)[0]){
-                        lineCol+=4;
-                    } else if (element == Character.toChars(32)[0]){
+                    } else if (element == '\t') {
+                        lineCol += 4;
+                    } else if (element == ' ') {
                         lineCol++;
                     }
                 } else {
@@ -164,8 +163,7 @@ public final class LexAnalyzer {
                         tokenName = "";
                     }
                     readingDot = false;
-
-                } else if(readingString) {
+                } else if (readingString) {
                     tokenName += element;
                 } else if (readingNumber) {
                     if (isFloat && element == '.') {
@@ -198,7 +196,6 @@ public final class LexAnalyzer {
                         tokenName += element;
                         generateToken(OPERATORS_TOKEN.get(tokenName));
                     }
-
                     readingBool = false;
                 } else {
                     if (element == ';') {
@@ -245,17 +242,16 @@ public final class LexAnalyzer {
                 }
                 break;
             default:
-                throw new Error("Unhandled element scanned");
+                throw new IllegalArgumentException("Unhandled element type: " + charType);
         }
     }
 
-    public static String endOfWord(){
-        if(KEYWORDS_TOKEN.containsKey(tokenName)){
+    public static String endOfWord() {
+        if (KEYWORDS_TOKEN.containsKey(tokenName)) {
             generateToken(KEYWORDS_TOKEN.get(tokenName));
         } else {
-            if (tokenName.length() > 0) {
-
-                if(tokenName.equals("true") || tokenName.equals("false")) {
+            if (!tokenName.isEmpty()) {
+                if ("true".equals(tokenName) || "false".equals(tokenName)) {
                     generateToken("BOOLLIT");
                 } else {
                     generateToken("IDENTIFIER");

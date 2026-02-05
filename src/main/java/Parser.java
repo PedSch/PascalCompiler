@@ -1,11 +1,11 @@
 import java.nio.ByteBuffer;
 import java.util.*;
 /*
-    HOW THIS FILE IS ARRAGED:
-    At the top, Pcode operations, hashmaps, and TYPE are declared and initalized. TYPE is a single enum type that we will use for Switch statement cases.
+    HOW THIS FILE IS ARRANGED:
+    At the top, Pcode operations, hashmaps, and TYPE are declared and initialized. TYPE is a single enum type that we will use for Switch statement cases.
     Then we have Stack ops, such as accesses and saves. These contain instructions that access the stack to load and emit addresses that the p-code will use.
     Also in this general area, are operations such as Assign and the like.
-    Finally, we have the basis of the compiler, Expression, F, T, etc. These have one charcter names for the purpose of using Cases.
+    Finally, we have the basis of the compiler, Expression, F, T, etc. These have one character names for the purpose of using Cases.
     Emit is also at the bottom, this is a general method that will output the p-code.
 
     This method of parser really takes advantage of cases, which makes it very simple to add functions down the road.
@@ -609,7 +609,7 @@ public final class Parser {
             String index = currentToken.getTokenValue();
             t = E();
             if (t != symbol.getIndexType()) {
-                throw new Error(String.format("Incompatible index type: (%s, %s)", t, symbol.getIndexType()));
+                throw new IllegalStateException(String.format("Incompatible index type: (%s, %s)", t, symbol.getIndexType()));
             }
             match("CLOSE_SQUARE_BRACKET");
             genOpCode(OP_CODE.PUSHI);

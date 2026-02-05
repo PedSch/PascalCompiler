@@ -5,7 +5,7 @@ asm
 begin
 case
 const
-consctor
+constructor
 destructor
 div
 do
@@ -52,7 +52,6 @@ while
 with
 xor
 writeln
-string
 integer
 real
 boolean

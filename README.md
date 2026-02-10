@@ -39,27 +39,65 @@ This compiler implements a complete compilation pipeline:
 
 ```
 .
-├── Driver.java           # Main compiler driver
-├── LexAnalyzer.java      # Lexical analyzer/scanner
-├── Parser.java           # Recursive descent parser
-├── CodeGenerator.java    # P-code generator and interpreter
-├── SymbolTable.java      # Symbol table with scope management
-├── Token.java            # Token representation
-├── Symbol.java           # Symbol table entries
-├── StackHandler.java     # Alternative stack handler implementation
-├── keywords.txt          # Pascal reserved words
-├── array.pas             # Example: array operations
-├── test_*.pas           # Additional test programs
-└── completedCompiler/    # Reference materials and examples
+├── src/
+│   └── main/
+│       ├── java/               # Java source files
+│       │   ├── Driver.java            # Main compiler driver
+│       │   ├── LexAnalyzer.java       # Lexical analyzer/scanner
+│       │   ├── Parser.java            # Recursive descent parser
+│       │   ├── CodeGenerator.java     # P-code generator and interpreter
+│       │   ├── SymbolTable.java       # Symbol table with scope management
+│       │   ├── Token.java             # Token representation
+│       │   ├── Symbol.java            # Symbol table entries
+│       │   └── StackHandler.java      # Alternative stack handler
+│       └── resources/
+│           └── keywords.txt    # Pascal reserved words
+├── pom.xml                     # Maven build configuration
+├── array.pas                   # Example: array operations
+├── demo.pas                    # Example: simple demo
+└── completedCompiler/          # Reference materials and examples
 ```
 
 ## How to Build
 
+### Using Maven (Recommended)
+
 ```bash
-javac *.java
+# Compile the project
+mvn clean compile
+
+# Create executable JAR
+mvn clean package
+
+# Run the JAR
+java -jar target/pascal-compiler-1.0.0.jar <pascal-file>
 ```
 
+### Using javac (Direct Compilation)
+
+```bash
+# Compile from source
+javac src/main/java/*.java
+
+# Run the compiler (requires keywords.txt in current directory or classpath)
+java -cp src/main/java Driver <pascal-file>
+```
+
+## Requirements
+
+- **Java:** JDK 17 or higher
+- **Maven:** 3.6.0+ (for Maven builds)
+- **OS:** Any (Linux, macOS, Windows)
+
 ## How to Run
+
+### Using Maven-built JAR (Recommended)
+
+```bash
+java -jar target/pascal-compiler-1.0.0.jar <pascal-file>
+```
+
+### Using Direct Compilation
 
 ```bash
 java Driver <pascal-file>
@@ -69,18 +107,12 @@ java Driver <pascal-file>
 
 **Simple arithmetic:**
 ```bash
-java Driver test_simple.pas
-```
-
-**Control structures:**
-```bash
-java Driver test_while.pas
-java Driver test_if.pas
+java -jar target/pascal-compiler-1.0.0.jar demo.pas
 ```
 
 **Arrays:**
 ```bash
-java Driver array.pas
+java -jar target/pascal-compiler-1.0.0.jar array.pas
 ```
 
 ## Sample Programs
